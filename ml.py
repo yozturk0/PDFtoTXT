@@ -5,7 +5,6 @@ class CRNN(nn.Module):
     def __init__(self, num_classes):
         super(CRNN, self).__init__()
         self.cnn = nn.Sequential(
-            # Add convolutional layers for feature extraction
             nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2, 2),
@@ -18,22 +17,16 @@ class CRNN(nn.Module):
 
     def forward(self, x):
         x = self.cnn(x)
-        x = x.permute(0, 2, 3, 1)  # rearrange for RNN
+        x = x.permute(0, 2, 3, 1) 
         x, _ = self.rnn(x)
         x = self.fc(x)
         return x
-
-# Load the dataset
-# text_recognition_dataset = TextRecognitionDataset(...)
-# text_loader = DataLoader(text_recognition_dataset, batch_size=32, shuffle=True)
-
-# Initialize the CRNN model
-num_classes = 36  # 26 letters + 10 digits
+        
+num_classes = 36 
 model = CRNN(num_classes)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-# Training loop
 for epoch in range(10):
     for images, labels in text_loader:
         outputs = model(images)
